@@ -98,11 +98,32 @@
   <script id= "host-pre-game-template" type="text/template">
     <div class="title">
       KNOCKOUT
-    </div><br>
+    </div>
     <div class="teamGameWrapper">
       <!--INSERT SHUFFLE TEAMS BUTTON-->
-      <button id = 'btnBeginGame' class = 'btn btn-primary' value = 'startBeginGame'>Start</button><br>
-      <button id = 'shuffleBtn' class = 'btn ' value = 'shuffleTeams'><i class="fas fa-sync"></i></button>
+      <div class="w3-row">
+        <div class='w3-col s4 w3-center'>
+        <button id = 'btnBeginGame' class = 'btn btn-primary' value = 'startBeginGame'>Start</button>
+      </div>
+      <div class='w3-col s4 w3-center'>
+        <button id = 'shuffleBtn' class = 'btn ' value = 'shuffleTeams'><i class="fas fa-sync"></i></button>
+      </div>
+      <div class='w3-col s4 w3-center'>
+
+              <div class="switch-field">
+                  <!--<div class="switch-title">Time of Game</div><br>-->
+                  <form id = 'timeForm'>
+                  <input type="radio" id="switch_3_left" name="switch_3" value="10"/>
+                  <label for="switch_3_left">10 Min</label>
+                  <input type="radio" id="switch_3_center" name="switch_3" value="5"checked/>
+                  <label for="switch_3_center">5 Min</label>
+            			<input type="radio" id="switch_3_right" name="switch_3" value="3" />
+                  <label for="switch_3_right">3 Min</label>
+                </form>
+            </div>
+      </div>
+      </div>
+
       <br>
 
       <div class = 'container' style = 'text-align: center; width: 100%;'>
@@ -146,8 +167,8 @@
       <div class = 'container' style = 'text-align: center; width: 100%;'>
       <div id = 'teamsTable' class = 'row'>
         <div class="col-sm-12">
-          <h3 id = 'playerTeamName'><u>Look on the screen AND find your team!</u></h3>
-          <div id = 'teamMembers'> </div>
+          <!--<h3 id = 'playerTeamName'><u>Look on the screen AND find your team!</u></h3>-->
+          <div id = 'teamMembers'></div>
         </div>
       </div>
     </div>
@@ -156,48 +177,56 @@
 
   <!-- This is the 'Host' screen. It displays the word for each player to match -->
   <script id="host-game-template" type="text/template">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+
     <div id="wordArea">
       <div id = "hostWord">5</div>
     </div>
-    <div id="playerScores">
-      <!--<div id="player1Score" class="playerScore">
+    <!--<div id="playerScores">
+      <div id="player1Score" class="playerScore">
         <span class="score">0</span><span class="playerName">Player 1</span>
       </div>
       <div id="player2Score" class="playerScore">
         <span class="playerName">Player 2</span><span class="score">0</span>
       </div>-->
     </div>
-      <br><br><br><br>
-    <div id = 'displayRound'>Current Round: </div>
-    <div id = 'displayTime'>Time: </div>
     <div id="progressBar">
       <div></div>
     </div>
+    <div id = 'w3-row-1' class="w3-row">
+    </div>
+    <br><br><br>
+    <div id = 'w3-row-2' class="w3-row">
+    </div>
+
   </script>
   <script id="player-game-template" type="text/template">
-    <div id="playerWordDiv">
-      <div id="playerWord"></div>
-    </div>
     <div id="playerScores">
       <div id="playerScore" class="playerScore">
         <span class="score">0</span><span class="playerName"></span>
       </div>
     </div>
-    <div>
+    <div id="playerWordDiv">
+      <div id="playerWord"></div>
+    </div>
+
 
     <div>
     <div id = 'answerDiv'>
     </div>
-        </div>
+    </div>
 
 
   </script>
   <script id="player-team-select-template" type="text/template">
 
-    <div id = 'teamSelect'>
+    <!--<div id = 'teamSelect'>-->
+      <div id = 'teamSelect' class="container">
+
+      </div>
       <!--<button class = 'deductTeamBtn' id = 'deductTeam1' type = 'button'>Team 1</button>
       <button class = 'deductTeamBtn' id = 'deductTeam2' type = 'button'>Team 2</button>-->
-    </div>
+    <!--</div>-->
 
 
   </script>
