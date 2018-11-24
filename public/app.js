@@ -27,8 +27,8 @@ jQuery(function($) {
       IO.socket.on('newGameCreated', IO.onNewGameCreated);
       IO.socket.on('playerJoinedRoom', IO.playerJoinedRoom);
       IO.socket.on('beginPreGame', IO.beginPreGame);
-      IO.socket.on('displayPlayerTeams', IO.displayPlayerTeams);
-      IO.socket.on('onTeamsCreated', IO.onTeamsCreated);
+      IO.socket.on('displayPlayerTeams', IO.displayTeams);
+    //  IO.socket.on('onTeamsCreated', IO.onTeamsCreated);
       IO.socket.on('beginNewGame', IO.beginNewGame);
       IO.socket.on('playerGameStarted', IO.playerNewGame);
       IO.socket.on('newWordData', IO.onNewWordData);
@@ -87,6 +87,15 @@ jQuery(function($) {
      */
     beginPreGame: function(data) {
       if (App.myRole === 'Host') {
+        App.Host.createTeams(data);
+      }
+      else if (App.myRole === 'Player') {
+        App.Player.createTeams(data);
+      }
+
+    },
+    displayTeams: function(data) {
+      if (App.myRole === 'Host') {
         App.Host.displayTeams(data);
       }
       else if (App.myRole === 'Player') {
@@ -116,6 +125,7 @@ jQuery(function($) {
     onNewWordData: function(data) {
       // Update the current round
       App.currentRound = data.round;
+      App.teamTotal = data.teamTotal;
 
       // Change the word for the Host and Player
       App[App.myRole].newWord(data);
@@ -192,6 +202,8 @@ jQuery(function($) {
      */
     currentRound: 0,
 
+    teamTotal: 0,
+
     /*Teams*/
     team1: [],
     team2: [],
@@ -255,9 +267,7 @@ jQuery(function($) {
       App.$doc.on('click', '.btnAnswer', App.Player.onPlayerAnswerClick);
       App.$doc.on('click', '#btnPlayerRestart', App.Player.onPlayerRestart);
       App.$doc.on('click', '.deductTeamBtn', App.Player.onDeductTeamBtn);
-      /*App.$doc.on('click', '#deductTeam1', App.Player.deductTeam1);
-      App.$doc.on('click', '#deductTeam2', App.Player.deductTeam2);
-      App.$doc.on('click', '#deductTeam3', App.Player.deductTeam3);*/
+
     },
 
     /* *************************************
@@ -313,7 +323,6 @@ jQuery(function($) {
        */
       currentCorrectAnswer: '',
 
-      teamCount: 0,
       /**
        * Handler for the "Start" button on the Title Screen.
        */
@@ -327,8 +336,25 @@ jQuery(function($) {
         IO.socket.emit('hostPreGame', App.Host.players);
       },
       gameStartClick: function() {
-        // console.log('Clicked "Create A Game"');
-        IO.socket.emit('hostRoomFull', App.gameId);
+        //WORKING HERE
+        //Find out which radio button is checked
+        var time = 0;
+        if(document.getElementById('switch_3_left').checked) {
+          //10 Min radio button is checked
+          time = 10;
+        }
+        else if(document.getElementById('switch_3_right').checked) {
+          time = 3;
+        }
+        else{
+          time = 5;
+
+        }
+        var data = {
+          gameId: App.gameId,
+          time: time
+        }
+        IO.socket.emit('hostRoomFull', data);
       },
 
       /**
@@ -353,7 +379,7 @@ jQuery(function($) {
         App.$gameArea.html(App.$templateNewGame);
 
         // Display the URL on screen
-        $('#gameURL').text('knockout-live.herokuapp.com');
+        $('#gameURL').text('127.0.0.1:5000');
         //App.doTextFit('#gameURL');
 
         // Show the gameId / room id on screen
@@ -383,8 +409,9 @@ jQuery(function($) {
         // Increment the number of players in the room
         App.Host.numPlayersInRoom += 1;
         //Creates a minimum for the amount of players required
-        if (App.Host.numPlayersInRoom < 6) {
-          var playersNeeded = 6 - (App.Host.numPlayersInRoom);
+        //NumberRequired
+        if (App.Host.numPlayersInRoom < 4) {
+          var playersNeeded = 4 - (App.Host.numPlayersInRoom);
           $("#createGameContainer").html("<button id = 'preTeamsBtn' class = 'btn btn-primary' value = 'createGame' disabled>Waiting on +" + playersNeeded + " players</button>");
         } else {
           var currentPlayers = App.Host.numPlayersInRoom;
@@ -392,7 +419,7 @@ jQuery(function($) {
         }
 
       },
-      displayTeams: function(data) {
+      createTeams: function(data) {
         // If this is a restarted game, show the screen.
         if (App.Host.isNewGame) {
           App.Host.displayNewGameScreen();
@@ -447,83 +474,83 @@ jQuery(function($) {
           case (n = 4):
             App.team1 = randomNames.slice(0, 2);
             App.team2 = randomNames.slice(2, 4);
-            App.Host.teamCount = 2;
+            App.teamTotal = 2;
             break;
           case (n = 5):
             App.team1 = randomNames.slice(0, 3);
             App.team2 = randomNames.slice(3, 5);
-            App.Host.teamCount = 2;
+            App.teamTotal = 2;
             break;
           case (n = 6):
             App.team1 = randomNames.slice(0, 2);
             App.team2 = randomNames.slice(2, 4);
             App.team3 = randomNames.slice(4, 7);
-            App.Host.teamCount = 3;
+            App.teamTotal = 3;
             break;
           case (n = 7):
             App.team1 = randomNames.slice(0, 3);
             App.team2 = randomNames.slice(3, 5);
             App.team3 = randomNames.slice(5, 8);
-            App.Host.teamCount = 3;
+            App.teamTotal = 3;
             break;
           case (n = 8):
             App.team1 = randomNames.slice(0, 3);
             App.team2 = randomNames.slice(3, 6);
             App.team3 = randomNames.slice(6, 9);
-            App.Host.teamCount = 3;
+            App.teamTotal = 3;
             break;
           case (n = 9):
             App.team1 = randomNames.slice(0, 3);
             App.team2 = randomNames.slice(3, 6);
             App.team3 = randomNames.slice(6, 10);
-            App.Host.teamCount = 3;
+            App.teamTotal = 3;
             break;
           case (n = 10):
             App.team1 = randomNames.slice(0, 4);
             App.team2 = randomNames.slice(4, 7);
             App.team3 = randomNames.slice(7, 11);
-            App.Host.teamCount = 3;
+            App.teamTotal = 3;
             break;
           case (n = 11):
             App.team1 = randomNames.slice(0, 4);
             App.team2 = randomNames.slice(4, 8);
             App.team3 = randomNames.slice(8, 11);
-            App.Host.teamCount = 3;
+            App.teamTotal = 3;
             break;
           case (n = 12):
             App.team1 = randomNames.slice(0, 3);
             App.team2 = randomNames.slice(3, 6);
             App.team3 = randomNames.slice(6, 9);
             App.team4 = randomNames.slice(9, 13);
-            App.Host.teamCount = 4;
+            App.teamTotal = 4;
             break;
           case (n = 13):
             App.team1 = randomNames.slice(0, 4);
             App.team2 = randomNames.slice(4, 7);
             App.team3 = randomNames.slice(7, 10);
             App.team4 = randomNames.slice(10, 14);
-            App.Host.teamCount = 4;
+            App.teamTotal = 4;
             break;
           case (n = 14):
             App.team1 = randomNames.slice(0, 4);
             App.team2 = randomNames.slice(4, 8);
             App.team3 = randomNames.slice(8, 11);
             App.team4 = randomNames.slice(11, 15);
-            App.Host.teamCount = 4;
+            App.teamTotal = 4;
             break;
           case (n = 15):
             App.team1 = randomNames.slice(0, 4);
             App.team2 = randomNames.slice(4, 8);
             App.team3 = randomNames.slice(8, 12);
             App.team4 = randomNames.slice(12, 16);
-            App.Host.teamCount = 4;
+            App.teamTotal = 4;
             break;
           case (n = 16):
             App.team1 = randomNames.slice(0, 4);
             App.team2 = randomNames.slice(4, 8);
             App.team3 = randomNames.slice(8, 12);
             App.team4 = randomNames.slice(12, 17);
-            App.Host.teamCount = 4;
+            App.teamTotal = 4;
             break;
           case (n = 17):
             App.team1 = randomNames.slice(0, 4);
@@ -531,7 +558,7 @@ jQuery(function($) {
             App.team3 = randomNames.slice(8, 11);
             App.team4 = randomNames.slice(11, 14);
             App.team5 = randomNames.slice(14, 18);
-            App.Host.teamCount = 5;
+            App.teamTotal = 5;
             break;
           case (n = 18):
             App.team1 = randomNames.slice(0, 4);
@@ -539,7 +566,7 @@ jQuery(function($) {
             App.team3 = randomNames.slice(8, 12);
             App.team4 = randomNames.slice(12, 15);
             App.team5 = randomNames.slice(15, 19);
-            App.Host.teamCount = 5;
+            App.teamTotal = 5;
             break;
           case (n = 19):
             App.team1 = randomNames.slice(0, 4);
@@ -547,7 +574,7 @@ jQuery(function($) {
             App.team3 = randomNames.slice(8, 12);
             App.team4 = randomNames.slice(12, 16);
             App.team5 = randomNames.slice(16, 20);
-            App.Host.teamCount = 5;
+            App.teamTotal = 5;
             break;
           case (n = 20):
             App.team1 = randomNames.slice(0, 4);
@@ -555,7 +582,7 @@ jQuery(function($) {
             App.team3 = randomNames.slice(8, 12);
             App.team4 = randomNames.slice(12, 16);
             App.team5 = randomNames.slice(16, 21);
-            App.Host.teamCount = 5;
+            App.teamTotal = 5;
             break;
             //ADD App.team 6 and RECONFIG?
           case (n = 21):
@@ -565,7 +592,7 @@ jQuery(function($) {
             App.team4 = randomNames.slice(12, 15);
             App.team5 = randomNames.slice(15, 18);
             App.team6 = randomNames.slice(18, 22);
-            App.Host.teamCount = 6;
+            App.teamTotal = 6;
             break;
           case (n = 22):
             App.team1 = randomNames.slice(0, 4);
@@ -574,7 +601,7 @@ jQuery(function($) {
             App.team4 = randomNames.slice(12, 16);
             App.team5 = randomNames.slice(16, 19);
             App.team6 = randomNames.slice(19, 23);
-            App.Host.teamCount = 6;
+            App.teamTotal = 6;
             break;
           case (n = 23):
             App.team1 = randomNames.slice(0, 4);
@@ -583,7 +610,7 @@ jQuery(function($) {
             App.team4 = randomNames.slice(12, 16);
             App.team5 = randomNames.slice(16, 20);
             App.team6 = randomNames.slice(20, 24);
-            App.Host.teamCount = 6;
+            App.teamTotal = 6;
             break;
           case (n = 24):
             App.team1 = randomNames.slice(0, 4);
@@ -592,7 +619,7 @@ jQuery(function($) {
             App.team4 = randomNames.slice(12, 16);
             App.team5 = randomNames.slice(16, 20);
             App.team6 = randomNames.slice(20, 25);
-            App.Host.teamCount = 6;
+            App.teamTotal = 6;
             break;
           case (n = 25):
             App.team1 = randomNames.slice(0, 4);
@@ -601,7 +628,7 @@ jQuery(function($) {
             App.team4 = randomNames.slice(12, 16);
             App.team5 = randomNames.slice(16, 20);
             App.team6 = randomNames.slice(20, 26);
-            App.Host.teamCount = 6;
+            App.teamTotal = 6;
             break;
 
           default:
@@ -624,17 +651,20 @@ jQuery(function($) {
           gameId: App.gameId,
           playerId: App.mySocketId,
           round: App.currentRound,
+          teamTotal: App.teamTotal,
           team1: App.team1,
           team2: App.team2,
           team3: App.team3,
           team4: App.team4,
           ko_id: ko_id
         }
-        IO.socket.emit('hostTeamsSet', data);
+        IO.socket.emit('displayTeams', data);
+
+        //IO.socket.emit('hostTeamsSet', data);
 
 
 
-        if (App.team1.length == 0) {
+        /*if (App.team1.length == 0) {
           $('#teamName1').hide();
         } else {
           $('#teamName1').show();
@@ -686,11 +716,67 @@ jQuery(function($) {
             $('#team6').append("<li>" + App.team6[i] + "</li><br>");
           }
         }
+        IO.socket.emit('hostTeamsSet', data);*/
 
 
 
 
         }
+      },
+      displayTeams: function(data) {
+        if (data.team1.length == 0) {
+          $('#teamName1').hide();
+        } else {
+          $('#teamName1').show();
+
+          for (var i = 0; i < data.team1.length; i++) {
+            $('#team1').append("<li>" + data.team1[i] + "</li><br>");
+            //App.team1[i] = data.team1[i];
+
+          }
+        }
+        if (data.team2.length == 0) {
+          $('#teamName2').hide();
+        } else {
+          $('#teamName2').show();
+          for (var i = 0; i < data.team2.length; i++) {
+            $('#team2').append("<li>" + data.team2[i] + "</li><br>");
+
+          }
+        }
+        if (data.team3.length == 0) {
+          $('#teamName3').hide();
+        } else {
+          $('#teamName3').show();
+          for (var i = 0; i < data.team3.length; i++) {
+            $('#team3').append("<li>" + data.team3[i] + "</li><br>");
+          }
+        }
+        if (data.team4.length == 0) {
+          $('#teamName4').hide();
+        } else {
+          $('#teamName4').show();
+          for (var i = 0; i < data.team4.length; i++) {
+            $('#team4').append("<li>" + data.team4[i] + "</li><br>");
+          }
+        }
+        if (data.team5.length == 0) {
+          $('#teamName5').hide();
+        } else {
+          $('#teamName5').show();
+          for (var i = 0; i < data.team5.length; i++) {
+            $('#team5').append("<li>" + data.team5[i] + "</li><br>");
+          }
+        }
+        if (data.team6.length == 0) {
+          $('#teamName6').hide();
+        } else {
+          $('#teamName6').show();
+          for (var i = 0; i < data.team6.length; i++) {
+            $('#team6').append("<li>" + data.team6[i] + "</li><br>");
+          }
+        }
+        IO.socket.emit('hostTeamsSet', data);
       },
       /**
        * @param data
@@ -718,49 +804,67 @@ jQuery(function($) {
         // Begin the on-screen countdown timer
         var $secondsLeft = $('#hostWord');
         App.countDown($secondsLeft, 5, function() {
-          $('#hostWord').text('Time to play!')
+          $('#hostWord').text('')
           App.doTextFit('#hostWord');
-          roundCountDown();
+          roundCountDown(data);
           IO.socket.emit('hostCountdownFinished', App.gameId);
 
         });
         // Begin the on-screen round countdown timer
-        function roundCountDown(){
+        function roundCountDown(data){
           //$secondsLeft = $('#displayTime');
+          var time = (data.time * 60);
 
-          progress(30, 30, $('#progressBar'));
+
+          progress(time, time, $('#progressBar'));
+
+          function progress(timeleft, timetotal, $element) {
+              var progressBarWidth = timeleft * $element.width() / timetotal;
+              //timeleft = $('#displayTime');
+              $element.find('div').animate({ width: progressBarWidth }, timeleft == timetotal ? 0 : 1000, 'linear').html();
+              if(timeleft > 0) {
+                  setTimeout(function() {
+                      progress(timeleft - 1, timetotal, $element);
+                  }, 1000);
+              }
+              else{
+                IO.socket.emit('gameOver', App.gameId);
+              }
+          }
+          //IO.socket.emit('gameOver', data);
+
+
           /*App.countDown($secondsLeft, 30, function() {
             $('#displayTime').text('Finished')
-          IO.socket.emit('gameOver');
+
         });*/
 
         }
-        function progress(timeleft, timetotal, $element) {
-            var progressBarWidth = timeleft * $element.width() / timetotal;
-            //timeleft = $('#displayTime');
-            $element.find('div').animate({ width: progressBarWidth }, timeleft == timetotal ? 0 : 1000, 'linear').html();
-            if(timeleft > 0) {
-                setTimeout(function() {
-                    progress(timeleft - 1, timetotal, $element);
-                }, 1000);
-            }
-            else{
-              $('#displayTime').text('Finished')
 
-              IO.socket.emit('gameOver', data);
-            }
-        };
-
-        //DYNAMIC TEAM CODE
-        for(var i = 0; i < App.Host.teamCount;i++){
+        //DYNAMIC TEAM CODE FIX ME
+        //for(var i = 0; i < App.teamTotal;i++){
+        for(var i = 0; i < 6;i++){
           var teamNum = i+1;
-          $('#playerScores').append("<div id='player"+teamNum+"Score' class='playerScore'><span class='score'>100</span><span class='playerName'>Team "+teamNum+"</span> </div>")
+          if(i<3){
+          $('#w3-row-1').append("<div id = 'player"+teamNum+"Score'class='w3-col s4 w3-center'><span class='playerName'>Team "+teamNum+"</span><br><span class='score'>100</span><br><div><progress class = 'teamHealthBar' id= 'Team"+teamNum+"health' value='100' max='100'></progress></div></div>")
+          /*$('#playerScores').append("<div id='player"+teamNum+"Score' class='playerScore'><span class='score'>100</span><span class='playerName'>Team "+teamNum+"</span> </div>")
           $('#player'+teamNum+'Score')
-            .find('.playerName')
+            .find('.playerName')*/
             //.html(App.Host.players[i].playerName);
 
           //$('#player'+teamNum+'Score').find('.score').attr('id', App.Host.players[i].mySocketId);
           $('#player'+teamNum+'Score').find('.score').attr('id', 'team'+teamNum);
+          }
+          else{
+            $('#w3-row-2').append("<div id = 'player"+teamNum+"Score'class='w3-col s4 w3-center'><span class='playerName'>Team "+teamNum+"</span><br><span class='score'>100</span><br><div><progress class = 'teamHealthBar' id= 'Team"+teamNum+"health' value='100' max='100'></progress></div></div>")
+            /*$('#playerScores').append("<div id='player"+teamNum+"Score' class='playerScore'><span class='score'>100</span><span class='playerName'>Team "+teamNum+"</span> </div>")
+            $('#player'+teamNum+'Score')
+              .find('.playerName')*/
+              //.html(App.Host.players[i].playerName);
+
+            //$('#player'+teamNum+'Score').find('.score').attr('id', App.Host.players[i].mySocketId);
+            $('#player'+teamNum+'Score').find('.score').attr('id', 'team'+teamNum);
+          }
 
 
         }
@@ -888,20 +992,57 @@ jQuery(function($) {
 
 
         var $pScore1 = $('#team1');
-
         var $pScore2 = $('#team2');
+        var $pScore3 = $('#team3');
+        var $pScore4 = $('#team4');
+        var $pScore5 = $('#team5');
+        var $pScore6 = $('#team6');
+
+
 
         if (data.teamDeduct == 'deductTeam1') {
           $pScore1.text(+$pScore1.text() - 5);
-          $('#hostWord').text("Ouch Team 1!");
-          App.doTextFit('#hostWord');
+          var health = document.getElementById("Team1health")
+          health.value -= 5; //Or whatever you want to do with it.
+          /*$('#hostWord').text("Ouch Team 1!");
+          App.doTextFit('#hostWord');*/
 
         }
-        else{
+        else if(data.teamDeduct == 'deductTeam2'){
            $pScore2.text(+$pScore2.text() - 5);
-           $('#hostWord').text("Ouch Team 2!");
-           App.doTextFit('#hostWord');
+           var health = document.getElementById("Team2health")
+           health.value -= 5;
+           /*$('#hostWord').text("Ouch Team 2!");
+           App.doTextFit('#hostWord');*/
 
+        }
+        else if(data.teamDeduct == 'deductTeam3'){
+           $pScore3.text(+$pScore3.text() - 5);
+           var health = document.getElementById("Team3health")
+           health.value -= 5;
+           /*$('#hostWord').text("Ouch Team 3!");
+           App.doTextFit('#hostWord');*/
+        }
+        else if(data.teamDeduct == 'deductTeam4'){
+           $pScore4.text(+$pScore4.text() - 5);
+           var health = document.getElementById("Team4health")
+           health.value -= 5;
+           /*$('#hostWord').text("Ouch Team 4!");
+           App.doTextFit('#hostWord');*/
+        }
+        else if(data.teamDeduct == 'deductTeam5'){
+           $pScore5.text(+$pScore5.text() - 5);
+           var health = document.getElementById("Team5health")
+           health.value -= 5;
+           /*$('#hostWord').text("Ouch Team 5!");
+           App.doTextFit('#hostWord');*/
+        }
+        else if(data.teamDeduct == 'deductTeam6'){
+           $pScore6.text(+$pScore6.text() - 5);
+           var health = document.getElementById("Team6health")
+           health.value -= 5;
+           /*$('#hostWord').text("Ouch Team 6!");
+           App.doTextFit('#hostWord');*/
         }
         IO.socket.emit('hostNextRound', data);
 
@@ -914,6 +1055,7 @@ jQuery(function($) {
         var data = {
           gameId: App.gameId,
           round: App.currentRound,
+          teamTotal: App.teamTotal,
         }
       },
 
@@ -979,6 +1121,8 @@ jQuery(function($) {
 
       team: '',
 
+      teamTotal: 0,
+
       currentCorrectAnswer: '',
 
 
@@ -1039,6 +1183,7 @@ jQuery(function($) {
           playerId: App.mySocketId,
           answer: answer,
           round: App.currentRound,
+          teamTotal: App.teamTotal,
           playerName: App.Player.myName
         }
         IO.socket.emit('playerAnswer', data);
@@ -1099,9 +1244,71 @@ jQuery(function($) {
        * Display 'Get Ready' while the countdown timer ticks down.
        * @param data
        */
-       displayTeams: function(data) {
-         App.$gameArea.html(App.$templatePlayerPreGame);
+       createTeams: function(data) {
+         //App.$gameArea.html(App.$templatePlayerPreGame);
          //$('#teamMembers').append("<li>My Name: "+ App.Player.myName +"</li><br>");
+         /*Check if Player name is in team array and populate to html page*/
+       },
+       displayTeams: function(data) {
+         App.teamTotal = data.teamTotal;
+         App.Player.teamTotal = data.teamTotal;
+         App.team1 = data.team1;
+         App.team2 = data.team2;
+         App.team3 = data.team3;
+         App.team4 = data.team4;
+         App.team5 = data.team5;
+         App.team6 = data.team6;
+
+
+         App.$gameArea.html(App.$templatePlayerPreGame);
+         if(arrayContains(App.Player.myName, data.team1)){
+           var team = data.team1;
+           $('#teamMembers').append("<li><h2>Teammates</h2><br></li><br>");
+           for(var i = 0; i < team.length;i++){
+            $('#teamMembers').append(team[i]+ "</li><br><br><li>");
+            }
+         }
+         else if(arrayContains(App.Player.myName, data.team2)){
+           var team = data.team2;
+           $('#teamMembers').append("<li><h2>Teammates</h2><br></li><br>");
+           for(var i = 0; i < team.length;i++){
+            $('#teamMembers').append(team[i]+ "</li><br><br><li>");
+            }
+         }
+         else if(arrayContains(App.Player.myName, data.team3)){
+           var team = data.team3;
+           $('#teamMembers').append("<li><h2>Teammates</h2><br></li><br>");
+           for(var i = 0; i < team.length;i++){
+            $('#teamMembers').append(team[i]+ "</li><br><br><li>");
+            }
+         }
+         else if(arrayContains(App.Player.myName, data.team4)){
+           var team = data.team3;
+           $('#teamMembers').append("<li><h2>Teammates</h2><br></li><br>");
+           for(var i = 0; i < team.length;i++){
+            $('#teamMembers').append(team[i]+ "</li><br><br><li>");
+            }
+         }
+         else if(arrayContains(App.Player.myName, data.team5)){
+           var team = data.team5;
+           $('#teamMembers').append("<li><h2>Teammates</h2><br></li><br>");
+           for(var i = 0; i < team.length;i++){
+            $('#teamMembers').append(team[i]+ "</li><br><br><li>");
+            }
+         }
+         else if(arrayContains(App.Player.myName, data.team6)){
+           var team = data.team6;
+           $('#teamMembers').append("<li><h2>Teammates</h2><br></li><br>");
+           for(var i = 0; i < team.length;i++){
+            $('#teamMembers').append(team[i]+ "</li><br><br><li>");
+            }
+         }
+
+         function arrayContains(needle, arrhaystack){
+           return (arrhaystack.indexOf(needle)> -1);
+         }
+
+
          /*Check if Player name is in team array and populate to html page*/
        },
        /**
@@ -1159,9 +1366,38 @@ jQuery(function($) {
 
         if(App.mySocketId === data.playerId){
           App.$gameArea.html(App.$playerTeamSelect);
+
           //Display Deduct Team WORKING HERE
-          $('#teamSelect').html("<button class = 'ccbtn btn-blue btn-simple deductTeamBtn' id = 'deductTeam1' type = 'button'> Team 1</button>");
-          $('#teamSelect').append("<button class = 'deductTeamBtn ccbtn btn-red btn-simple' id = 'deductTeam2' type = 'button'>Team 2</button>");
+          if(App.Player.teamTotal == 6 ){
+            $('#teamSelect').html("<div><button class = 'ccbtn btn-blue btn-simple deductTeamBtn' id = 'deductTeam1' type = 'button'> Team 1</button></div>");
+            $('#teamSelect').append("<div><button class = 'deductTeamBtn ccbtn btn-red btn-simple' id = 'deductTeam2' type = 'button'>Team 2</button></div>");
+            $('#teamSelect').append("<div><button class = 'deductTeamBtn ccbtn btn-gray btn-simple' id = 'deductTeam3' type = 'button'>Team 3</button></div>");
+            $('#teamSelect').append("<div><button class = 'deductTeamBtn ccbtn btn-green btn-simple' id = 'deductTeam4' type = 'button'>Team 4</button></div>");
+            $('#teamSelect').append("<div><button class = 'deductTeamBtn ccbtn btn-pink btn-simple' id = 'deductTeam5' type = 'button'>Team 5</button></div>");
+            $('#teamSelect').append("<div><button class = 'deductTeamBtn ccbtn btn-orange btn-simple' id = 'deductTeam6' type = 'button'>Team 6</button></div>");
+          }
+          else if(App.Player.teamTotal == 5 ){
+            $('#teamSelect').html("<div><button class = 'ccbtn btn-blue btn-simple deductTeamBtn' id = 'deductTeam1' type = 'button'> Team 1</button></div>");
+            $('#teamSelect').append("<div><button class = 'deductTeamBtn ccbtn btn-red btn-simple' id = 'deductTeam2' type = 'button'>Team 2</button></div>");
+            $('#teamSelect').append("<div><button class = 'deductTeamBtn ccbtn btn-gray btn-simple' id = 'deductTeam3' type = 'button'>Team 3</button></div>");
+            $('#teamSelect').append("<div><button class = 'deductTeamBtn ccbtn btn-green btn-simple' id = 'deductTeam4' type = 'button'>Team 4</button></div>");
+            $('#teamSelect').append("<div><button class = 'deductTeamBtn ccbtn btn-pink btn-simple' id = 'deductTeam5' type = 'button'>Team 5</button></div>");
+          }
+          else if(App.Player.teamTotal == 4){
+            $('#teamSelect').html("<div><button class = 'ccbtn btn-blue btn-simple deductTeamBtn' id = 'deductTeam1' type = 'button'> Team 1</button></div>");
+            $('#teamSelect').append("<div><button class = 'deductTeamBtn ccbtn btn-red btn-simple' id = 'deductTeam2' type = 'button'>Team 2</button></div>");
+            $('#teamSelect').append("<div><button class = 'deductTeamBtn ccbtn btn-gray btn-simple' id = 'deductTeam3' type = 'button'>Team 3</button></div>");
+            $('#teamSelect').append("<div><button class = 'deductTeamBtn ccbtn btn-green btn-simple' id = 'deductTeam4' type = 'button'>Team 4</button></div>");
+          }
+          else if(App.Player.teamTotal == 3){
+            $('#teamSelect').html("<div><button class = 'ccbtn btn-blue btn-simple deductTeamBtn' id = 'deductTeam1' type = 'button'> Team 1</button></div>");
+            $('#teamSelect').append("<div><button class = 'deductTeamBtn ccbtn btn-red btn-simple' id = 'deductTeam2' type = 'button'>Team 2</button></div>");
+            $('#teamSelect').append("<div><button class = 'deductTeamBtn ccbtn btn-gray btn-simple' id = 'deductTeam3' type = 'button'>Team 3</button></div>");
+          }
+          else{
+            $('#teamSelect').html("<div><button class = 'ccbtn btn-blue btn-simple deductTeamBtn' id = 'deductTeam1' type = 'button'> Team 1</button></div>");
+            $('#teamSelect').append("<div><button class = 'deductTeamBtn ccbtn btn-red btn-simple' id = 'deductTeam2' type = 'button'>Team 2</button></div>");
+          }
             var data = {
               gameId: App.gameId,
               round: App.currentRound,
