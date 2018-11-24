@@ -18,6 +18,7 @@ exports.initGame = function(sio, socket){
     gameSocket.on('hostCreateNewGame', hostCreateNewGame);
     gameSocket.on('hostPreGame', hostPreGame);
     gameSocket.on('hostRoomFull', hostPrepareGame);
+    gameSocket.on('displayTeams', displayTeams);
     gameSocket.on('hostTeamsSet', hostTeamsSet);
     gameSocket.on('hostCountdownFinished', hostStartGame);
     gameSocket.on('hostNextRound', hostNextRound);
@@ -60,6 +61,7 @@ function hostCreateNewGame() {
 function hostPreGame(data) {
 
     // Return the Room ID (gameId) and the socket ID (mySocketId) to the browser client
+
     //this.emit('beginPreGame', data);
     io.sockets.in(data.gameId).emit('beginPreGame', data);
 
@@ -69,24 +71,51 @@ function hostPreGame(data) {
  * Two players have joined. Alert the host!
  * @param gameId The game ID / room ID
  */
-function hostPrepareGame(gameId) {
+function hostPrepareGame(data) {
     var sock = this;
+    console.log(data.time);
     var data = {
         mySocketId : sock.id,
-        gameId : gameId,
+        gameId : data.gameId,
+        time : data.time
     };
     //console.log("All Players Present. Preparing game...");
     io.sockets.in(data.gameId).emit('beginNewGame', data);
-}
-function hostTeamsSet(data) {
+};
+function displayTeams(data) {
 
-    console.log("All Players Present. Preparing game...");
-    console.log(data.ko_id);
-    ko_id = data.ko_id
+    ko_id = data.ko_id;
+    console.log("All Players Present. Preparing Teams...");
+    console.log("Team Total: " + data.teamTotal);
+    console.log("Team 1 p1: " + data.team1[0]);
+    console.log("Team 1 p2: " + data.team1[1]);
+    console.log("Team 2 p1: " + data.team2[0]);
+    console.log("Team 2 p2: " + data.team2[1]);
+    console.log("Team 3 p1: " + data.team3[0]);
+    console.log("Team 3 p2: " + data.team3[1]);
     io.sockets.in(data.gameId).emit('displayPlayerTeams', data);
     populateQuestionPool(ko_id);
 
-}
+};
+
+function hostTeamsSet(data) {
+
+    console.log("All Players Present. Preparing Teams...");
+    console.log(data.ko_id);
+    console.log("Team Total: " + data.teamTotal);
+    console.log("Team 1 p1: " + data.team1[0]);
+    console.log("Team 1 p2: " + data.team1[1]);
+    console.log("Team 2 p1: " + data.team2[0]);
+    console.log("Team 2 p2: " + data.team2[1]);
+    console.log("Team 3 p1: " + data.team3[0]);
+    console.log("Team 3 p2: " + data.team3[1]);
+
+
+    ko_id = data.ko_id;
+    //io.sockets.in(data.gameId).emit('displayPlayerTeams', data);
+    populateQuestionPool(ko_id);
+
+};
 
 
 /*
@@ -110,15 +139,13 @@ function hostNextRound(data) {
         sendWord(data.round, data.gameId);
     } else {
         // If the current round exceeds the number of words, send the 'gameOver' event.
-        console.log('Game Over...');
-        wordPool.length = 0;
-        io.sockets.in(data.gameId).emit('gameOver', data);
+        sendWord(0,data.gameId);
     }
 }
 function gameOver(data) {
         console.log('Game Over...');
         io.sockets.in(data.gameId).emit('gameOver');
-}
+};
 /* *****************************
    *                           *
    *     PLAYER FUNCTIONS      *
@@ -239,7 +266,7 @@ function getWordData(i){
 
 
     //Shuffles Questions
-    //shuffle(wordPool);
+    shuffle(wordPool);
 
     var question = wordPool[i].question;
     var cor_answer = wordPool[i].cor_ans;
@@ -473,4 +500,30 @@ var wordPool = [
         "decoys" : [ "14","18","20",]
     }
   ]
-*/
+
+  /*if(data.numPlayersInRoom > 20 ){
+    $('#teamSelect').html("<div><button class = 'ccbtn btn-blue btn-simple deductTeamBtn' id = 'deductTeam1' type = 'button'> Team 1</button></div>");
+    $('#teamSelect').append("<div><button class = 'deductTeamBtn ccbtn btn-red btn-simple' id = 'deductTeam2' type = 'button'>Team 2</button></div>");
+    $('#teamSelect').append("<div><button class = 'deductTeamBtn ccbtn btn-gray btn-simple' id = 'deductTeam3' type = 'button'>Team 3</button></div>");
+    $('#teamSelect').append("<div><button class = 'deductTeamBtn ccbtn btn-green btn-simple' id = 'deductTeam4' type = 'button'>Team 4</button></div>");
+    $('#teamSelect').append("<div><button class = 'deductTeamBtn ccbtn btn-pink btn-simple' id = 'deductTeam5' type = 'button'>Team 5</button></div>");
+    $('#teamSelect').append("<div><button class = 'deductTeamBtn ccbtn btn-orange btn-simple' id = 'deductTeam6' type = 'button'>Team 6</button></div>");
+  }
+  else if(data.numPlayersInRoom > 16 ){
+    $('#teamSelect').html("<div><button class = 'ccbtn btn-blue btn-simple deductTeamBtn' id = 'deductTeam1' type = 'button'> Team 1</button></div>");
+    $('#teamSelect').append("<div><button class = 'deductTeamBtn ccbtn btn-red btn-simple' id = 'deductTeam2' type = 'button'>Team 2</button></div>");
+    $('#teamSelect').append("<div><button class = 'deductTeamBtn ccbtn btn-gray btn-simple' id = 'deductTeam3' type = 'button'>Team 3</button></div>");
+    $('#teamSelect').append("<div><button class = 'deductTeamBtn ccbtn btn-green btn-simple' id = 'deductTeam4' type = 'button'>Team 4</button></div>");
+    $('#teamSelect').append("<div><button class = 'deductTeamBtn ccbtn btn-pink btn-simple' id = 'deductTeam5' type = 'button'>Team 5</button></div>");
+  }
+  else if(data.numPlayersInRoom > 11){
+    $('#teamSelect').html("<div><button class = 'ccbtn btn-blue btn-simple deductTeamBtn' id = 'deductTeam1' type = 'button'> Team 1</button></div>");
+    $('#teamSelect').append("<div><button class = 'deductTeamBtn ccbtn btn-red btn-simple' id = 'deductTeam2' type = 'button'>Team 2</button></div>");
+    $('#teamSelect').append("<div><button class = 'deductTeamBtn ccbtn btn-gray btn-simple' id = 'deductTeam3' type = 'button'>Team 3</button></div>");
+    $('#teamSelect').append("<div><button class = 'deductTeamBtn ccbtn btn-green btn-simple' id = 'deductTeam4' type = 'button'>Team 4</button></div>");
+  }
+  else{
+    $('#teamSelect').html("<div><button class = 'ccbtn btn-blue btn-simple deductTeamBtn' id = 'deductTeam1' type = 'button'> Team 1</button></div>");
+    $('#teamSelect').append("<div><button class = 'deductTeamBtn ccbtn btn-red btn-simple' id = 'deductTeam2' type = 'button'>Team 2</button></div>");
+    $('#teamSelect').append("<div><button class = 'deductTeamBtn ccbtn btn-gray btn-simple' id = 'deductTeam3' type = 'button'>Team 3</button></div>");
+  }*/
