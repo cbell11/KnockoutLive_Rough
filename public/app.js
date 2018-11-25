@@ -1369,34 +1369,36 @@ jQuery(function($) {
 
           //Display Deduct Team WORKING HERE
           if(App.Player.teamTotal == 6 ){
-            $('#teamSelect').html("<div><button class = 'ccbtn btn-blue btn-simple deductTeamBtn' id = 'deductTeam1' type = 'button'> Team 1</button></div>");
-            $('#teamSelect').append("<div><button class = 'deductTeamBtn ccbtn btn-red btn-simple' id = 'deductTeam2' type = 'button'>Team 2</button></div>");
-            $('#teamSelect').append("<div><button class = 'deductTeamBtn ccbtn btn-gray btn-simple' id = 'deductTeam3' type = 'button'>Team 3</button></div>");
-            $('#teamSelect').append("<div><button class = 'deductTeamBtn ccbtn btn-green btn-simple' id = 'deductTeam4' type = 'button'>Team 4</button></div>");
-            $('#teamSelect').append("<div><button class = 'deductTeamBtn ccbtn btn-pink btn-simple' id = 'deductTeam5' type = 'button'>Team 5</button></div>");
-            $('#teamSelect').append("<div><button class = 'deductTeamBtn ccbtn btn-orange btn-simple' id = 'deductTeam6' type = 'button'>Team 6</button></div>");
+            $('#w3-teamDeduct-row-1').append("<div class = 'w3-col s4 w3-center'><button class = 'ccbtn btn-blue btn-simple deductTeamBtn' id = 'deductTeam1' type = 'button'> Team 1</button></div>");
+            $('#w3-teamDeduct-row-1').append("<div class = 'w3-col s4 w3-center'><button class = 'deductTeamBtn ccbtn btn-red btn-simple' id = 'deductTeam2' type = 'button'>Team 2</button></div>");
+            $('#w3-teamDeduct-row-1').append("<div class = 'w3-col s4 w3-center'><button class = 'deductTeamBtn ccbtn btn-gray btn-simple' id = 'deductTeam3' type = 'button'>Team 3</button></div>");
+            $('#w3-teamDeduct-row-2').append("<div class = 'w3-col s4 w3-center'><button class = 'ccbtn btn-green btn-simple deductTeamBtn' id = 'deductTeam4' type = 'button'> Team 4</button></div>");
+            $('#w3-teamDeduct-row-2').append("<div class = 'w3-col s4 w3-center'><button class = 'ccbtn btn-pink btn-simple deductTeamBtn' id = 'deductTeam5' type = 'button'> Team 5</button></div>");
+            $('#w3-teamDeduct-row-2').append("<div class = 'w3-col s4 w3-center'><button class = 'ccbtn btn-orange btn-simple deductTeamBtn' id = 'deductTeam6' type = 'button'> Team 6</button></div>");
+
           }
           else if(App.Player.teamTotal == 5 ){
-            $('#teamSelect').html("<div><button class = 'ccbtn btn-blue btn-simple deductTeamBtn' id = 'deductTeam1' type = 'button'> Team 1</button></div>");
-            $('#teamSelect').append("<div><button class = 'deductTeamBtn ccbtn btn-red btn-simple' id = 'deductTeam2' type = 'button'>Team 2</button></div>");
-            $('#teamSelect').append("<div><button class = 'deductTeamBtn ccbtn btn-gray btn-simple' id = 'deductTeam3' type = 'button'>Team 3</button></div>");
-            $('#teamSelect').append("<div><button class = 'deductTeamBtn ccbtn btn-green btn-simple' id = 'deductTeam4' type = 'button'>Team 4</button></div>");
-            $('#teamSelect').append("<div><button class = 'deductTeamBtn ccbtn btn-pink btn-simple' id = 'deductTeam5' type = 'button'>Team 5</button></div>");
+            $('#w3-teamDeduct-row-1').append("<div class = 'w3-col s4 w3-center'><button class = 'ccbtn btn-blue btn-simple deductTeamBtn' id = 'deductTeam1' type = 'button'> Team 1</button></div>");
+            $('#w3-teamDeduct-row-1').append("<div class = 'w3-col s4 w3-center'><button class = 'deductTeamBtn ccbtn btn-red btn-simple' id = 'deductTeam2' type = 'button'>Team 2</button></div>");
+            $('#w3-teamDeduct-row-1').append("<div class = 'w3-col s4 w3-center'><button class = 'deductTeamBtn ccbtn btn-gray btn-simple' id = 'deductTeam3' type = 'button'>Team 3</button></div>");
+            $('#w3-teamDeduct-row-2').append("<div class = 'w3-col s4 w3-center'><button class = 'ccbtn btn-green btn-simple deductTeamBtn' id = 'deductTeam4' type = 'button'> Team 4</button></div>");
+            $('#w3-teamDeduct-row-2').append("<div class = 'w3-col s4 w3-center'><button class = 'ccbtn btn-pink btn-simple deductTeamBtn' id = 'deductTeam5' type = 'button'> Team 5</button></div>");
+
           }
           else if(App.Player.teamTotal == 4){
-            $('#teamSelect').html("<div><button class = 'ccbtn btn-blue btn-simple deductTeamBtn' id = 'deductTeam1' type = 'button'> Team 1</button></div>");
-            $('#teamSelect').append("<div><button class = 'deductTeamBtn ccbtn btn-red btn-simple' id = 'deductTeam2' type = 'button'>Team 2</button></div>");
-            $('#teamSelect').append("<div><button class = 'deductTeamBtn ccbtn btn-gray btn-simple' id = 'deductTeam3' type = 'button'>Team 3</button></div>");
-            $('#teamSelect').append("<div><button class = 'deductTeamBtn ccbtn btn-green btn-simple' id = 'deductTeam4' type = 'button'>Team 4</button></div>");
+            $('#w3-teamDeduct-row-1').append("<div class = 'w3-col s4 w3-center'><button class = 'ccbtn btn-blue btn-simple deductTeamBtn' id = 'deductTeam1' type = 'button'> Team 1</button></div>");
+            $('#w3-teamDeduct-row-1').append("<div class = 'w3-col s4 w3-center'><button class = 'deductTeamBtn ccbtn btn-red btn-simple' id = 'deductTeam2' type = 'button'>Team 2</button></div>");
+            $('#w3-teamDeduct-row-1').append("<div class = 'w3-col s4 w3-center'><button class = 'deductTeamBtn ccbtn btn-gray btn-simple' id = 'deductTeam3' type = 'button'>Team 3</button></div>");
+            $('#w3-teamDeduct-row-2').append("<div class = 'w3-col s4 w3-center'><button class = 'ccbtn btn-green btn-simple deductTeamBtn' id = 'deductTeam4' type = 'button'> Team 4</button></div>");
           }
           else if(App.Player.teamTotal == 3){
-            $('#teamSelect').html("<div><button class = 'ccbtn btn-blue btn-simple deductTeamBtn' id = 'deductTeam1' type = 'button'> Team 1</button></div>");
-            $('#teamSelect').append("<div><button class = 'deductTeamBtn ccbtn btn-red btn-simple' id = 'deductTeam2' type = 'button'>Team 2</button></div>");
-            $('#teamSelect').append("<div><button class = 'deductTeamBtn ccbtn btn-gray btn-simple' id = 'deductTeam3' type = 'button'>Team 3</button></div>");
+            $('#w3-teamDeduct-row-1').append("<div class = 'w3-col s4 w3-center'><button class = 'ccbtn btn-blue btn-simple deductTeamBtn' id = 'deductTeam1' type = 'button'> Team 1</button></div>");
+            $('#w3-teamDeduct-row-1').append("<div class = 'w3-col s4 w3-center'><button class = 'deductTeamBtn ccbtn btn-red btn-simple' id = 'deductTeam2' type = 'button'>Team 2</button></div>");
+            $('#w3-teamDeduct-row-1').append("<div class = 'w3-col s4 w3-center'><button class = 'deductTeamBtn ccbtn btn-gray btn-simple' id = 'deductTeam3' type = 'button'>Team 3</button></div>");
           }
           else{
-            $('#teamSelect').html("<div><button class = 'ccbtn btn-blue btn-simple deductTeamBtn' id = 'deductTeam1' type = 'button'> Team 1</button></div>");
-            $('#teamSelect').append("<div><button class = 'deductTeamBtn ccbtn btn-red btn-simple' id = 'deductTeam2' type = 'button'>Team 2</button></div>");
+            $('#w3-teamDeduct-row-1').append("<div class = 'w3-col s4 w3-center' ><button class = 'ccbtn btn-blue btn-simple deductTeamBtn' id = 'deductTeam1' type = 'button'> Team 1</button></div>");
+            $('#w3-teamDeduct-row-1').append("<div class = 'w3-col s4 w3-center'><button class = 'deductTeamBtn ccbtn btn-red btn-simple' id = 'deductTeam2' type = 'button'>Team 2</button></div>");
           }
             var data = {
               gameId: App.gameId,
