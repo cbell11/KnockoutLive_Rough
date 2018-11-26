@@ -38,7 +38,7 @@ html, body {
     line-height: 1.2;
     text-align: center;
     background-color: #ffd300;
-    white-space: nowrap;
+    /*white-space: nowrap;*/
     vertical-align: middle;
     cursor: pointer;
     border: 1px solid transparent;
@@ -144,7 +144,7 @@ html, body {
     font-family: 'Quicksand', sans-serif;
     color: black;
     font-weight: 300;
-    font-size: 54px;
+    font-size: 2em;
     border: none;
     border-bottom:  2px solid #333a40;
     background: transparent;
@@ -410,27 +410,7 @@ button:focus {
 
    ****************************** */
 
-
-#ulAnswers {
-    width: 100%;
-    height: 100%;
-    margin: 0;
-    padding: 0;
-}
-
-#ulAnswers li {
-    width: 100%;
-    height: auto;
-}
-
-.btnAnswer {
-    width: 100%;
-    border-bottom: 1px dotted black;
-    font-weight: 400;
-    font-size: 3em;
-    color: black;
-}
-#teamSelect{
+/*#teamSelect{
 
   display: grid;
   grid-gap: 10px;
@@ -441,9 +421,9 @@ button:focus {
   position: absolute;
   top: 50%;
 
-}
-.deductTeamBtn{
-}
+}*/
+
+
 .ccbtn {
   font-size:20px;
   font-family: Arial;
@@ -452,7 +432,7 @@ button:focus {
   text-decoration: none;
   margin-right:25px;
   margin-bottom:25px;
-  text-transform:uppercase;
+  text-transform: uppercase;
 }
 .ccbtn:hover {
   opacity:0.9;
@@ -538,7 +518,7 @@ button:focus {
 
 .playerScore span {
     display: inline-block;
-    font-size: 1.4EM;
+    font-size: 1.3vw;
     padding: 2%;
     min-width: 10%;
     margin: 0;
@@ -555,59 +535,61 @@ button:focus {
     color: white;
     background-color: #333a40;
 }
-#w3-row-1{
-  margin-top: 10%;
+#teamSelect{
+height: 90%;
+margin-top: 10%;
 }
-#w3-row-2{
-  margin-top: 10%;
+#w3-teamDeduct-row-1{
+  display: inline;
+  margin: auto;
 }
-/*
-#player1Score{
-  float: left;
-  margin-top: 1%;
+#w3-teaDeductrow-2{
 }
-#player2Score{
-  float: right;
-  text-align: right;
-  margin-top: 1%;
-}
-#player3Score{
-  float: left;
-  margin-top: 12%;
-}
-#player4Score{
-  float: right;
-  margin-top: 12%;
-  margin-right: -500px;
-}
-#player5Score{
-  position: fixed;
-
-}
-#player6Score{
-  position: absolute;
-  right: 0;
-  bottom:0;
-}*/
-
 #answer_bank{
     position: fixed;
+    text-align: center;
+    align-content: center;
+    align-items: center;
+    vertical-align: middle;
     bottom: 0;
-    margin-left: 12%;
-    margin-bottom: 20px;
-    width: 70%;
+    width: 100%;
+    height: 40%;
     list-style-type: none;
-    font-size: 1.5vw;
+    font-size: 1vw;
 
 
 }
 #playerWordDiv{
-  height: 100%;
+  height: 90%;
   width:100%;
   font-family: 'Quicksand', sans-serif;
-  font-size: 6em;
-
   text-align: center;
+}
+#playerWord{
+  font-size: 7vw;
+  width: 100%;
+}
+#ulAnswers {
+    width: 100%;
+    height: 100%;
+    padding: 0;
+}
+
+#ulAnswers li {
+    width: 100%;
+    height: 50%;
+}
+
+.btnAnswer {
+    width: 100% ;
+    height: 75%;
+    margin-left: -40px;
+    /*border-bottom: 1px solid black;*/
+    font-weight: 400;
+    font-size: 3em;
+    color: black;
+    text-align: center;
+
 }
 
 
