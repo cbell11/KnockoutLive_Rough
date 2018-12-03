@@ -841,9 +841,7 @@ jQuery(function($) {
 
         }
 
-        //DYNAMIC TEAM CODE FIX ME
-        //for(var i = 0; i < App.teamTotal;i++){
-        for(var i = 0; i < 6;i++){
+        for(var i = 0; i < App.teamTotal;i++){
           var teamNum = i+1;
           if(i<3){
           $('#w3-row-1').append("<div id = 'player"+teamNum+"Score'class='w3-col s4 w3-center'><span class='playerName'>Team "+teamNum+"</span><br><span class='score'>100</span><br><div><progress class = 'teamHealthBar' id= 'Team"+teamNum+"health' value='100' max='100'></progress></div></div>")
@@ -1075,9 +1073,51 @@ jQuery(function($) {
         var p2Score = +$p2.find('.score').text();
         var p2Name = $p2.find('.playerName').text();
 
+        var $p3 = $('#player3Score');
+        var p3Score = +$p3.find('.score').text();
+        var p3Name = $p3.find('.playerName').text();
+
+        var $p4 = $('#player4Score');
+        var p4Score = +$p4.find('.score').text();
+        var p4Name = $p4.find('.playerName').text();
+
+        var $p5 = $('#player5Score');
+        var p5Score = +$p5.find('.score').text();
+        var p5Name = $p5.find('.playerName').text();
+
+        var $p6 = $('#player6Score');
+        var p6Score = +$p6.find('.score').text();
+        var p6Name = $p6.find('.playerName').text();
+
         // Find the winner based on the scores
-        var winner = (p1Score < p2Score) ? p2Name : p1Name;
-        var tie = (p1Score === p2Score);
+        //var winner = (p1Score < p2Score) ? p2Name : p1Name;
+        var winner;
+
+        var highestScore = Math.max(p1Score,p2Score,p3Score,p4Score,p5Score,p6Score)
+        switch(highestScore){
+          case p6Score:
+            winner = 'Team 6';
+            break;
+          case p5Score:
+            winner = 'Team 5';
+            break;
+          case p4Score:
+            winner = 'Team 4';
+            break;
+          case p3Score:
+            winner = 'Team 3';
+            break;
+          case p2Score:
+            winner = 'Team 2';
+            break;
+          case p1Score:
+            winner = 'Team 1';
+            break;
+        }
+
+
+        //var tie = (p1Score === p2Score);
+        var tie = false;
 
         // Display the winner (or tie game message)
         if (tie) {
