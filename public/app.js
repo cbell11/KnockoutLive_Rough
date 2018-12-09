@@ -256,6 +256,8 @@ jQuery(function($) {
       App.$doc.on('click', '#teamsBtn', App.Host.teamsCreateClick);
       App.$doc.on('click', '#shuffleBtn', App.Host.teamsCreateClick);
       App.$doc.on('click', '#btnBeginGame', App.Host.gameStartClick);
+      App.$doc.on('click', '#btnHostRestart', App.Host.teamsCreateClick);
+
 
 
 
@@ -332,7 +334,7 @@ jQuery(function($) {
       },
       teamsCreateClick: function() {
         // console.log('Clicked "Create A Game"');
-        App.$gameArea.html(App.$templateHostPreGame);
+        //App.$gameArea.html(App.$templateHostPreGame);
         IO.socket.emit('hostPreGame', App.Host.players);
       },
       gameStartClick: function() {
@@ -355,6 +357,36 @@ jQuery(function($) {
           time: time
         }
         IO.socket.emit('hostRoomFull', data);
+      },
+      onHostRestart: function(data) {
+        function getParam( name )
+        {
+         name = name.replace(/[\[]/,"\\\[").replace(/[\]]/,"\\\]");
+         var regexS = "[\\?&]"+name+"=([^&#]*)";
+         var regex = new RegExp( regexS );
+         var results = regex.exec( window.location.href );
+         if( results == null )
+          return "";
+        else
+         return results[1];
+        }
+
+        var ko_id = getParam( 'GoLive' );
+        var data = {
+          gameId: App.gameId,
+          playerId: App.mySocketId,
+          round: App.currentRound,
+          teamTotal: App.teamTotal,
+          team1: App.team1,
+          team2: App.team2,
+          team3: App.team3,
+          team4: App.team4,
+          team5: App.team5,
+          team6: App.team6,
+          ko_id: ko_id
+        }
+        App.currentRound = 0;
+        IO.socket.emit('displayPlayerTeams', data);
       },
 
       /**
@@ -425,6 +457,7 @@ jQuery(function($) {
           App.Host.displayNewGameScreen();
         }
         if (App.myRole === 'Host') {
+
         // Update host screen
         //$('#playersWaiting')
         //    .append('<li>')
@@ -656,6 +689,8 @@ jQuery(function($) {
           team2: App.team2,
           team3: App.team3,
           team4: App.team4,
+          team5: App.team5,
+          team6: App.team6,
           ko_id: ko_id
         }
         IO.socket.emit('displayTeams', data);
@@ -724,6 +759,7 @@ jQuery(function($) {
         }
       },
       displayTeams: function(data) {
+        App.$gameArea.html(App.$templateHostPreGame);
         if (data.team1.length == 0) {
           $('#teamName1').hide();
         } else {
@@ -815,8 +851,8 @@ jQuery(function($) {
           //$secondsLeft = $('#displayTime');
           var time = (data.time * 60);
 
-
-          progress(time, time, $('#progressBar'));
+          //progress(time, time, $('#progressBar'));
+          progress(30, 30, $('#progressBar'));
 
           function progress(timeleft, timetotal, $element) {
               var progressBarWidth = timeleft * $element.width() / timetotal;
@@ -1092,44 +1128,96 @@ jQuery(function($) {
         // Find the winner based on the scores
         //var winner = (p1Score < p2Score) ? p2Name : p1Name;
         var winner;
+        var winnerScore;
+        var tieCount = 0;
+        var tie = false;
 
         var highestScore = Math.max(p1Score,p2Score,p3Score,p4Score,p5Score,p6Score)
         switch(highestScore){
           case p6Score:
             winner = 'Team 6';
+            winnerScore = p6Score;
             break;
           case p5Score:
             winner = 'Team 5';
+            winnerScore = p5Score;
             break;
           case p4Score:
             winner = 'Team 4';
+            winnerScore = p4Score;
             break;
           case p3Score:
             winner = 'Team 3';
+            winnerScore = p3Score;
             break;
           case p2Score:
             winner = 'Team 2';
+            winnerScore = p2Score;
             break;
           case p1Score:
             winner = 'Team 1';
+            winnerScore = p6Score;
             break;
         }
-
-
+            if(winnerScore == p6Score){
+              tieCount++;
+            }
+            if(winnerScore == p5Score){
+              tieCount++;
+            }
+            if(winnerScore == p4Score){
+              tieCount++;
+            }
+            if(winnerScore == p3Score){
+              tieCount++;
+            }
+            if(winnerScore == p2Score){
+              tieCount++;
+            }
+            if(winnerScore == p1Score){
+              tieCount++;
+            }
+        if(tieCount > 1){
+          tie = true;
+        }
         //var tie = (p1Score === p2Score);
-        var tie = false;
-
         // Display the winner (or tie game message)
         if (tie) {
-          $('#hostWord').text("It's a Tie!");
+          $('#gameArea')
+            .html("<div class='gameOver'>It's a Tie</div>")
+            .append(
+              // Create a button to start a new game.
+              $('<button>Start Again</button>')
+              .attr('id', 'btnHostRestart')
+              .addClass('btn')
+              .addClass('btnGameOver')
+            );
         } else {
-          $('#hostWord').text(winner + ' Wins!!');
+          //
+          $('#gameArea')
+            .html('<div class="gameOver">'+winner+' Wins!</div>')
+            .append(
+              // Create a button to start a new game.
+              $('<button>Start Again</button>')
+              .attr('id', 'btnHostRestart')
+              .addClass('btn')
+              .addClass('btnGameOver')
+            );
         }
         App.doTextFit('#hostWord');
 
         // Reset game data
         App.Host.numPlayersInRoom = 0;
         App.Host.isNewGame = true;
+      },
+      onPlayerRestart: function() {
+        var data = {
+          gameId: App.gameId,
+          playerName: App.Player.myName
+        }
+        IO.socket.emit('playerRestart', data);
+        App.currentRound = 0;
+        $('#gameArea').html("<h3>Waiting on host to start new game.</h3>");
       },
 
       /**
